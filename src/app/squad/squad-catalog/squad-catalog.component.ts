@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Product } from '@shared/product.model';
-import { engineers } from './engineers';
+import { CartService } from '@core/cart.service';
+import { Observable } from 'rxjs';
+import { IProductsService, IProductsServiceToken } from '@shared/products.service.interface';
 
 @Component({
   selector: 'bot-catalog',
@@ -9,12 +11,11 @@ import { engineers } from './engineers';
   providers: []
 })
 export class SquadCatalogComponent {
-  squad: Product[] = engineers;
-  private cart: Product[] = [];
+  squad: Observable<Product[]> = this.engineersService.getProducts();
 
-  constructor() { }
+  constructor(@Inject(IProductsServiceToken) private engineersService: IProductsService, private cartService: CartService) { }
 
   addToCart(engineer: Product) {
-    this.cart.push(engineer);
+    this.cartService.add(engineer);
   }
 }
